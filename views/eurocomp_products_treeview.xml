@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="producto_tree_view" model="ir.ui.view">
+            <field name="name">eurocomp.producto.tree</field>
+            <field name="model">eurocomp.producto</field>
+            <field name="arch" type="xml">
+                <tree
+                        string="Productos"
+                        create="false"
+                        edit="false"
+                        delete="false"
+                        decoration-danger="stock == 0"
+                        decoration-warning="(stock &gt;= 1) and (stock &lt;= 3)"
+                        decoration-success="stock > 3">
+                    <header>
+<!--                        <button string="Actualizar" type="object" class="btn-primary" name="action_getItems"/>-->
+<!--                        <button string="Crear producto" type="object" class="btn-primary" name="action_createProduct"/>-->
+                    </header>
+
+                    <field name="codigo" />
+                    <field name="marca" />
+                    <field name="familia" />
+                    <field name="clase" />
+                    <field name="modelo" />
+                    <field name="descripcion"/>
+                    <field name="caracteristicas"/>
+                    <field name="stock"/>
+                    <field name="precio"/>
+                    <field name="peso"/>
+                    <field name="medida"/>
+                    <field name="cod_hacienda"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="producto_search_view" model="ir.ui.view">
+            <field name="name">eurocomp.producto.search</field>
+            <field name="model">eurocomp.producto</field>
+            <field name="arch" type="xml">
+                <search string="Productos">
+                    <group expand="1" string="Agrupar por">
+                        <filter string="Familia" name="familia_field" domain="[]" context="{'group_by':'familia'}"/>
+                        <filter string="Stock" name="stock_filter" domain="[('stock', '>=', 1)]"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="producto_act_window" model="ir.actions.act_window">
+            <field name="name">Productos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">eurocomp.producto</field>
+            <field name="view_mode">tree</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Aun no hay productos, presione actualizar para importar productos.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

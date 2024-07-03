@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_inventory_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.inventory.view.form</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='request_vendor_setting_container']" position="inside">
+                <div class="col-12 col-lg-6 o_setting_box" id="main_stock_eurocomp">
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">EuroComp Importer Module</span>
+                        <div class="text-muted">
+                            Import products from EuroComp Of Costa Rica.
+                        </div>
+                        <div class="content-group">
+
+                            <div class="row mt16">
+                                <label for="eurocomp_username" class="col-lg-3 o_light_label"/>
+                                <div class="col-lg-9">
+                                    <field name="eurocomp_username" string="EuroComp API User"/>
+                                </div>
+                            </div>
+
+                            <div class="row mt16">
+                                <label for="eurocomp_password" class="col-lg-3 o_light_label"/>
+                                <div class="col-lg-9">
+                                    <field name="eurocomp_password" password="True" string="EuroComp API Password"/>
+                                </div>
+                            </div>
+
+                            <div class="row mt16">
+                                <label for="eurocomp_stock_min" class="col-lg-3 o_light_label"/>
+                                <div class="col-lg-9">
+                                    <field name="eurocomp_stock_min" string="Stock Min"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

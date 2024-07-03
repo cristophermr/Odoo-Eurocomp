@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_eurocomp_eurocomp,eurocomp.model_producto,eurocomp.model_eurocomp_producto,stock.group_stock_manager,1,1,1,1
+access_eurocomp_cron,eurocomp.eurocomp_cron,eurocomp.model_eurocomp_cron,stock.group_stock_manager,1,1,1,1

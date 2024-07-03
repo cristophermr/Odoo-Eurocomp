@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Heredar la vista product_supplierinfo_tree_view -->
+    <record id="view_product_supplierinfo_tree_inherit" model="ir.ui.view">
+        <field name="name">product.supplierinfo.tree.inherit.current.stock</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+        <field name="arch" type="xml">
+            <!-- Añadir el campo current_stock al tree view -->
+            <xpath expr="//tree" position="inside">
+                <field name="current_stock" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

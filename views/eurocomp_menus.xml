@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem name="EuroComp"
+              id="eurocomp_menu_main"
+              web_icon="eurocomp,static/images/odoo_icon.png"
+              groups="stock.group_stock_manager"
+    />
+
+    <menuitem name="Productos"
+              id="eurocomp.productos"
+              parent="eurocomp_menu_main"
+              sequence="1"
+              action="producto_act_window"
+              groups="stock.group_stock_manager"/>
+</odoo>

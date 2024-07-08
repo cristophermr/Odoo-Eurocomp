@@ -12,10 +12,10 @@
                         delete="false"
                         decoration-danger="stock == 0"
                         decoration-warning="(stock &gt;= 1) and (stock &lt;= 3)"
-                        decoration-success="stock > 3">
+                        decoration-success="stock > 3"
+                >
                     <header>
-<!--                        <button string="Actualizar" type="object" class="btn-primary" name="action_getItems"/>-->
-<!--                        <button string="Crear producto" type="object" class="btn-primary" name="action_createProduct"/>-->
+                        <button string="Crear productos" type="object" class="btn-primary" name="action_import_products"/>
                     </header>
 
                     <field name="codigo" />
@@ -52,6 +52,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">eurocomp.producto</field>
             <field name="view_mode">tree</field>
+            <field name="domain">[('added', '=', False)]</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Aun no hay productos, presione actualizar para importar productos.

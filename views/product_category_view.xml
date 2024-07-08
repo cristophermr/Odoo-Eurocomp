@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cr_electronic_product_category_form_view_inherit" model="ir.ui.view">
+            <field name="name">product.category.form.inherit</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <div class="oe_button_box" name="sku_slug_button_box">
+                        <label for="sku_slug"/>
+                        <field name="sku_slug" class="oe_inline"/>
+                        <button name="action_generate_sku" string="Generar SKU" type="object" class="oe_inline oe_highlight"/>
+                    </div>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

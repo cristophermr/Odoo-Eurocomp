@@ -29,6 +29,7 @@ Este módulo importa todos los productos de Eurocomp y a su vez actualiza sus re
         'views/eurocomp_products_treeview.xml',
         'views/eurocomp_menus.xml',
         'views/product_supplierinfo_view.xml',
+        'views/product_category_view.xml',
         'data/cron.xml',
         'security/ir.model.access.csv',
     ],

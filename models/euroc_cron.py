@@ -53,5 +53,11 @@ class EuroCron(models.TransientModel):
 
         return True
 
+    # def update_products(self):
+    #
+
     def cron_getItems(self):
         self.save_Products()
+
+    # def cron_updateItems(self):
+    #     # self.

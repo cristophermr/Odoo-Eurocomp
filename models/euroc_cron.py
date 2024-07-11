@@ -53,8 +53,9 @@ class EuroCron(models.TransientModel):
 
         return True
 
-    # def update_products(self):
-    #
+    def update_products(self):
+        ltsProducts = self.env['product.supplierinfo'].search([('current_stock','not',False)])
+        return 1
 
     def cron_getItems(self):
         self.save_Products()

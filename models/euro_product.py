@@ -101,9 +101,10 @@ class Producto(models.Model):
     def _CalculatePrice(self, precio):
         ObjExchange = self.env['res.currency.rate']
         Exchange = ObjExchange.search([], order='name desc', limit=1)
+        margin = self.env['res.config.settings'].sudo().search([], limit=1).eurocomp_margin
 
         # Redondear el valor de Exchange a 2 decimales
-        Price = round((precio / ((100 - 15) / 100) * Exchange.original_rate))
+        Price = round((precio / ((100 - int(margin)) / 100) * Exchange.original_rate))
         Total = round(Price / 10) * 10  # Redondeamos al múltiplo de 10 más cercano directamente
         return Total
 

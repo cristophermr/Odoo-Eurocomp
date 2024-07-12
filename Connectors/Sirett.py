@@ -17,9 +17,10 @@ class SirettConnector:
         return service(self.user, self.password, *args)
 
     def get_items(self, pBodega):
-        response = self._authenticate('wsc_request_bodega_all_items', int(pBodega))
+        response = self._authenticate('wsc_request_bodega_all_item', int(pBodega))
         return response['data']
 
     def get_item(self, pBodega, pProducto):
         response = self._authenticate('wsp_request_bodega_item', int(pBodega), int(pProducto))
+        print(response)
         return response['data']

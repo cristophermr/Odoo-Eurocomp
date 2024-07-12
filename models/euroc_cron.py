@@ -53,12 +53,33 @@ class EuroCron(models.TransientModel):
 
         return True
 
+    def ProductSwitch(self, productid,state):
+        Product_tmpl = self.env['product.template'].sudo().search(['id','=',productid], limit=1)
+        if state:
+            Product_tmpl.active = True
+        else:
+            Product_tmpl.active = False
+        Product_tmpl.save()
+
     def update_products(self):
-        ltsProducts = self.env['product.supplierinfo'].search([('current_stock','not',False)])
-        return 1
+        partner = self.env['res.partner'].search([('vat', '=', '3101294674')], limit=1).id
+        ltsProducts = self.env['product.supplierinfo'].search([('partner_id','=',partner)])
+        _configs = self._get_sirett_config()
+        for Product in ltsProducts:
+            _connector = Sirett.SirettConnector(_configs.eurocomp_username, _configs.eurocomp_password)
+            EuroProduct = _connector.get_item(1,Product.product_code)
+            if EuroProduct['stock'] != Product.current_stock:
+                Product.current_stock = EuroProduct['stock']
+            if EuroProduct['precio'] > Product.price:
+                Product.price = EuroProduct['precio']
+            if EuroProduct['stock'] < _configs.eurocomp_min_stock:
+                self.ProductSwitch(Product.product_tmpl_id,False)
+            else:
+                self.ProductSwitch(Product.product_tmpl_id,True)
+            Product.save()
 
     def cron_getItems(self):
         self.save_Products()
 
-    # def cron_updateItems(self):
-    #     # self.
+    def cron_updateItems(self):
+        self.update_products()

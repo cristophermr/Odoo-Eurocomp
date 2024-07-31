@@ -1,5 +1,10 @@
+import logging
+
 from odoo import fields, models, api
 from ..Connectors import Sirett
+
+_logger = logging.getLogger(__name__)
+
 
 class EuroCron(models.TransientModel):
     _name = 'eurocomp.cron'
@@ -53,30 +58,54 @@ class EuroCron(models.TransientModel):
 
         return True
 
-    def ProductSwitch(self, productid,state):
-        Product_tmpl = self.env['product.template'].sudo().search(['id','=',productid], limit=1)
-        if state:
-            Product_tmpl.active = True
-        else:
-            Product_tmpl.active = False
-        Product_tmpl.save()
+    def ProductSwitch(self, productid, state):
+        Product_tmpl = self.env['product.template'].sudo().search([('id', '=', productid)], limit=1)
+        if Product_tmpl:
+            Product_tmpl.write({'active': state})
 
     def update_products(self):
         partner = self.env['res.partner'].search([('vat', '=', '3101294674')], limit=1).id
-        ltsProducts = self.env['product.supplierinfo'].search([('partner_id','=',partner)])
+        ltsProducts = self.env['product.supplierinfo'].search([('partner_id', '=', partner)])
         _configs = self._get_sirett_config()
-        for Product in ltsProducts:
-            _connector = Sirett.SirettConnector(_configs.eurocomp_username, _configs.eurocomp_password)
-            EuroProduct = _connector.get_item(1,Product.product_code)
-            if EuroProduct['stock'] != Product.current_stock:
-                Product.current_stock = EuroProduct['stock']
-            if EuroProduct['precio'] > Product.price:
-                Product.price = EuroProduct['precio']
-            if EuroProduct['stock'] < _configs.eurocomp_min_stock:
-                self.ProductSwitch(Product.product_tmpl_id,False)
-            else:
-                self.ProductSwitch(Product.product_tmpl_id,True)
-            Product.save()
+
+        for product in ltsProducts:
+            try:
+                _connector = Sirett.SirettConnector(_configs.eurocomp_username, _configs.eurocomp_password)
+                EuroProduct = _connector.get_item(1, product.product_code)[0]
+
+                # Obtiene el stock actual utilizando un campo calculado en product.product
+                Warehouse_Stock = product.product_tmpl_id.qty_available #Esto esta mal
+
+                if EuroProduct['stock'] != product.current_stock:
+                    product.current_stock = EuroProduct['stock']
+
+                if EuroProduct['precio'] > product.price:
+                    product.price = self._CalculatePrice(float(EuroProduct['precio']),True)
+                    product.product_tmpl_id.list_price = self._CalculatePrice(float(EuroProduct['precio']))
+                    product.product_tmpl_id.standart_price = self._CalculatePrice(float(EuroProduct['precio']),True)
+
+                # Validación del stock actual en las bodegas y el stock del proveedor
+                if EuroProduct['stock'] < _configs.eurocomp_stock_min and Warehouse_Stock <= 0:
+                    self.ProductSwitch(product.product_tmpl_id.id, False)
+                else:
+                    self.ProductSwitch(product.product_tmpl_id.id, True)
+                product.update()
+            except Exception as e:
+                _logger.error(e)
+
+    def _CalculatePrice(self, precio, cost=False):
+        ObjExchange = self.env['res.currency.rate']
+        Exchange = ObjExchange.search([], order='name desc', limit=1)
+
+        if cost == False:
+            margin = self.env['res.config.settings'].sudo().search([], limit=1).eurocomp_margin
+            # Redondear el valor de Exchange a 2 decimales
+            Price = round((precio / ((100 - int(margin)) / 100) * Exchange.original_rate))
+            Total = round(Price / 10) * 10  # Redondeamos al múltiplo de 10 más cercano directamente
+            return float(Total)
+        else:
+            return float(round(precio * Exchange.original_rate / 10) * 10)
+
 
     def cron_getItems(self):
         self.save_Products()

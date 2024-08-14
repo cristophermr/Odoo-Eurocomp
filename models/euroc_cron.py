@@ -86,7 +86,7 @@ class EuroCron(models.TransientModel):
                     product.product_tmpl_id.standart_price = self._CalculatePrice(float(EuroProduct['precio']),True)
 
                 # Validación del stock actual en las bodegas y el stock del proveedor
-                if EuroProduct['stock'] < _configs.eurocomp_stock_min and Warehouse_Stock <= 0:
+                if EuroProduct['stock'] < _configs.get_param('eurocomp_stock_min') and Warehouse_Stock <= 0:
                     self.ProductSwitch(product.product_tmpl_id.id, False)
                 else:
                     self.ProductSwitch(product.product_tmpl_id.id, True)

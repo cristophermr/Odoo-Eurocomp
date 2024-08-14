@@ -75,7 +75,7 @@ class EuroCron(models.TransientModel):
             try:
                 EuroProduct = _connector.get_item(1, product.product_code)[0]
                 # Obtiene el stock actual utilizando un campo calculado en product.product
-                Warehouse_Stock = product.product_tmpl_id.qty_available #Esto esta mal
+                Warehouse_Stock = product.product_tmpl_id.qty_available
 
                 if EuroProduct['stock'] != product.current_stock:
                     product.current_stock = EuroProduct['stock']
@@ -90,7 +90,7 @@ class EuroCron(models.TransientModel):
                     self.ProductSwitch(product.product_tmpl_id.id, False)
                 else:
                     self.ProductSwitch(product.product_tmpl_id.id, True)
-                product.update()
+
             except Exception as e:
                 _logger.error(e)
 

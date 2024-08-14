@@ -12,7 +12,7 @@ class EuroCron(models.TransientModel):
 
     def _get_sirett_config(self):
         # Método para obtener la configuración de Sirett
-        config = self.env['res.config.settings'].sudo().search([], limit=1)
+        config = self.env['ir.config_parameter'].sudo().search([], limit=1)
         return config
 
     def save_Products(self):
@@ -67,8 +67,9 @@ class EuroCron(models.TransientModel):
         partner = self.env['res.partner'].search([('vat', '=', '3101294674')], limit=1).id
         ltsProducts = self.env['product.supplierinfo'].search([('partner_id', '=', partner)])
         _configs = self._get_sirett_config()
-
-        _connector = Sirett.SirettConnector(_configs.eurocomp_username, _configs.eurocomp_password)
+        _user = _configs.eurocomp_username
+        _password = _configs.eurocomp_password
+        _connector = Sirett.SirettConnector(_user, _password)
         for product in ltsProducts:
             try:
                 EuroProduct = _connector.get_item(1, product.product_code)[0]
@@ -97,7 +98,7 @@ class EuroCron(models.TransientModel):
         Exchange = ObjExchange.search([], order='name desc', limit=1)
 
         if cost == False:
-            margin = self.env['res.config.settings'].sudo().search([], limit=1).eurocomp_margin
+            margin = self.env['ir.config_parameter'].sudo().search([], limit=1).eurocomp_margin
             # Redondear el valor de Exchange a 2 decimales
             Price = round((precio / ((100 - int(margin)) / 100) * Exchange.original_rate))
             Total = round(Price / 10) * 10  # Redondeamos al múltiplo de 10 más cercano directamente

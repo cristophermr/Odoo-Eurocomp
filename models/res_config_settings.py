@@ -9,6 +9,19 @@ class ResConfigSettings(models.TransientModel):
     eurocomp_margin = fields.Integer(string='Profit margin', help="Profit margin of imported products")
 
 
+    def set_values(self):
+        super(ResConfigSettings,self).set_values()
+        set_param = self.env['ir.config_parameter'].sudo().set_param
+
+        if self.eurocomp_username:
+            set_param('eurocomp_username', self.eurocomp_username)
+        if self.eurocomp_password:
+            set_param('eurocomp_password', self.eurocomp_password)
+        if self.eurocomp_stock_min:
+            set_param('eurocomp_stock_min', self.eurocomp_stock_min)
+        if self.eurocomp_margin:
+            set_param('eurocomp_margin', self.eurocomp_margin)
+
     @api.model
     def get_values(self):
         res = super(ResConfigSettings,self).get_values()
@@ -31,17 +44,3 @@ class ResConfigSettings(models.TransientModel):
             eurocomp_margin=eurocomp_margin
         )
         return res
-
-    @api.model
-    def set_values(self):
-        super(ResConfigSettings,self).set_values()
-        set_param = self.env['ir.config_parameter'].sudo().set_param
-
-        if self.eurocomp_username:
-            set_param('eurocomp_username', self.eurocomp_username)
-        if self.eurocomp_password:
-            set_param('eurocomp_password', self.eurocomp_password)
-        if self.eurocomp_stock_min:
-            set_param('eurocomp_stock_min', self.eurocomp_stock_min)
-        if self.eurocomp_margin:
-            set_param('eurocomp_margin', self.eurocomp_margin)

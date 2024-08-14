@@ -24,7 +24,7 @@ class Producto(models.Model):
 
     @api.model
     def get_stock_min(self):
-        config = self.env['res.config.settings'].sudo().search([], limit=1)
+        config = self.env['ir.config_parameter'].sudo().search([], limit=1)
         return config.eurocomp_stock_min if config else 0
 
     def action_import_products(self):
@@ -101,7 +101,7 @@ class Producto(models.Model):
     def _CalculatePrice(self, precio):
         ObjExchange = self.env['res.currency.rate']
         Exchange = ObjExchange.search([], order='name desc', limit=1)
-        margin = self.env['res.config.settings'].sudo().search([], limit=1).eurocomp_margin
+        margin = self.env['ir.config_parameter'].sudo().search([], limit=1).eurocomp_margin
 
         # Redondear el valor de Exchange a 2 decimales
         Price = round((precio / ((100 - int(margin)) / 100) * Exchange.original_rate))

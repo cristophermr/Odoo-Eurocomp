@@ -13,7 +13,7 @@ Este módulo importa todos los productos de Eurocomp y a su vez actualiza sus re
     'website': "https://singulary.online",
     'license': "OPL-1",
     'category': 'Inventory',
-    'version': '17.0.0.1',
+    'version': '17.0.0.2',
 
     #Dependencias Python
     'external_dependencies': {

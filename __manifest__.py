@@ -17,7 +17,7 @@ Este módulo importa todos los productos de Eurocomp y a su vez actualiza sus re
 
     #Dependencias Python
     'external_dependencies': {
-        'python': ['zeep'],
+        'python': ['zeep','Pillow'],
     },
 
     # Modulos necesarios para que este funcione correctamente
@@ -32,14 +32,6 @@ Este módulo importa todos los productos de Eurocomp y a su vez actualiza sus re
         'views/product_category_view.xml',
         'data/cron.xml',
         'security/ir.model.access.csv',
-    ],
-
-    # Archivos XML que contienen las vistas del módulo
-    'qweb': [
-    ],
-
-    # Archivos XML de datos de demostración (opcional)
-    'demo': [
     ],
     'application': True,  # Esto indica que es una aplicación
     'icon': 'eurocomp/static/images/odoo_icon.png',  # Ruta a tu icono

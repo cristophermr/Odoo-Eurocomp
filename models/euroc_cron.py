@@ -1,7 +1,7 @@
 import logging
 
 from odoo import fields, models, api
-from ..Connectors import Sirett
+from ..classes import Sirett
 
 _logger = logging.getLogger(__name__)
 
@@ -68,11 +68,10 @@ class EuroCron(models.TransientModel):
         ltsProducts = self.env['product.supplierinfo'].search([('partner_id', '=', partner)])
         _configs = self._get_sirett_config()
 
+        _connector = Sirett.SirettConnector(_configs.eurocomp_username, _configs.eurocomp_password)
         for product in ltsProducts:
             try:
-                _connector = Sirett.SirettConnector(_configs.eurocomp_username, _configs.eurocomp_password)
                 EuroProduct = _connector.get_item(1, product.product_code)[0]
-
                 # Obtiene el stock actual utilizando un campo calculado en product.product
                 Warehouse_Stock = product.product_tmpl_id.qty_available #Esto esta mal
 

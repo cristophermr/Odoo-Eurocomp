@@ -11,8 +11,11 @@ class ProductTemplate(models.Model):
     def write(self, vals):
         if vals.get('image_1920'):
             image_path = vals['image_1920']
+            if isinstance(image_path, bytes):
+                # Decodifica los bytes a una cadena
+                image_path = image_path.decode('utf-8')
+
             builder = ImageBuilder()
             processed_image = builder.compute_image_1920(image_path)
-            if processed_image:
-                vals['image_1920'] = processed_image
+            vals['image_1920'] = processed_image
         return super(ProductTemplate, self).write(vals)

@@ -1,10 +1,10 @@
 import logging
-
+import base64
+import requests
 from odoo import fields, models, api
 from ..classes import Sirett
 
 _logger = logging.getLogger(__name__)
-
 
 class EuroCron(models.TransientModel):
     _name = 'eurocomp.cron'
@@ -81,9 +81,21 @@ class EuroCron(models.TransientModel):
                     product.current_stock = EuroProduct['stock']
 
                 if EuroProduct['precio'] > product.price:
-                    product.price = self._CalculatePrice(float(EuroProduct['precio']),True)
+                    product.price = self._CalculatePrice(float(EuroProduct['precio']), True)
                     product.product_tmpl_id.list_price = self._CalculatePrice(float(EuroProduct['precio']))
-                    product.product_tmpl_id.standart_price = self._CalculatePrice(float(EuroProduct['precio']),True)
+                    product.product_tmpl_id.standart_price = self._CalculatePrice(float(EuroProduct['precio']), True)
+
+                # Aquí se descarga la imagen y se convierte en base64 antes de asignarla
+                if EuroProduct['image_url'] and not product.product_tmpl_id.image_1920:
+                    image_url = "https://eurocompcr.com/" + EuroProduct['image_url']
+                    try:
+                        response = requests.get(image_url)
+                        response.raise_for_status()  # Asegurarse de que la solicitud sea exitosa
+                        # Almacenar la imagen en base64 como bytes
+                        image_base64_bytes = base64.b64encode(response.content)
+                        product.product_tmpl_id.image_1920 = image_base64_bytes
+                    except requests.exceptions.RequestException as e:
+                        _logger.error("Error downloading image from %s: %s", image_url, e)
 
                 # Validación del stock actual en las bodegas y el stock del proveedor
                 if int(EuroProduct['stock']) < int(_configs.get_param('eurocomp_stock_min')) and Warehouse_Stock <= 0:
@@ -98,15 +110,14 @@ class EuroCron(models.TransientModel):
         ObjExchange = self.env['res.currency.rate']
         Exchange = ObjExchange.search([], order='name desc', limit=1)
 
-        if cost == False:
-            margin = self.env['ir.config_parameter'].sudo().get_params('eurocomp_margin')
+        if not cost:
+            margin = self.env['ir.config_parameter'].sudo().get_param('eurocomp_margin')
             # Redondear el valor de Exchange a 2 decimales
             Price = round((precio / ((100 - int(margin)) / 100) * Exchange.original_rate))
             Total = round(Price / 10) * 10  # Redondeamos al múltiplo de 10 más cercano directamente
             return float(Total)
         else:
             return float(round(precio * Exchange.original_rate / 10) * 10)
-
 
     def cron_getItems(self):
         self.save_Products()

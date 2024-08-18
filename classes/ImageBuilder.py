@@ -9,15 +9,14 @@ _logger = logging.getLogger(__name__)
 class ImageBuilder:
 
     def __init__(self):
-        self.image_domain = "https://eurocompcr.com/"
         self.image_base = "https://pcmasters.tech/frames/WEB.jpg"
         self.final_width = 1920
         self.final_height = 1920
+        self.scale_factor = 2.5  # Factor de escala para hacer la imagen más grande
 
     def _decode_base64(self, base64_str):
         """Decodifica una cadena base64 en una imagen binaria."""
         try:
-            # Decodificar la cadena base64
             image_data = base64.b64decode(base64_str)
             return Image.open(BytesIO(image_data)).convert('RGBA')
         except Exception as e:
@@ -27,21 +26,17 @@ class ImageBuilder:
     def _download_image(self, img_path):
         """Descargar imagen desde una URL o manejar cadena base64."""
         try:
-            # Verificar si img_path es una URL
             if img_path.startswith('https://'):
+                _logger.info(f"Attempting to download image from URL: {img_path}")
                 response = requests.get(img_path)
                 if response.status_code == 200:
+                    _logger.info(f"Successfully downloaded image from {img_path}")
                     image_data = BytesIO(response.content)
-                    with Image.open(image_data) as img:
-                        img.verify()  # Verificar la integridad de la imagen
-                    image_data.seek(0)  # Reposición del cursor en el buffer
                     return Image.open(image_data).convert('RGBA')
                 else:
-                    _logger.error(f"Failed to download image. Status code: {response.status_code}")
+                    _logger.error(f"Failed to download image from {img_path}. Status code: {response.status_code}")
                     return None
-
-            # Si no es una URL, se trata de una cadena base64
-            if isinstance(img_path, str):
+            elif isinstance(img_path, str):
                 return self._decode_base64(img_path)
 
         except Exception as e:
@@ -52,12 +47,15 @@ class ImageBuilder:
         """Procesar y combinar imagen."""
         try:
             # Descargar la imagen de fondo
+            _logger.info(f"Attempting to download background image from {self.image_base}")
             bg_response = requests.get(self.image_base)
+
             if bg_response.status_code == 200:
+                _logger.info(f"Successfully downloaded background image from {self.image_base}")
                 bg_image = Image.open(BytesIO(bg_response.content))
                 bg_image = bg_image.resize((self.final_width, self.final_height), Image.LANCZOS)
             else:
-                _logger.error(f"Failed to download background image. Status code: {bg_response.status_code}")
+                _logger.error(f"Failed to download background image from {self.image_base}. Status code: {bg_response.status_code}")
                 return None
 
             # Obtener la imagen del producto
@@ -66,11 +64,19 @@ class ImageBuilder:
                 _logger.error("Failed to download or process product image.")
                 return None
 
-            # Redimensionar la imagen del producto a las dimensiones finales
-            prod_image = prod_image.resize((self.final_width, self.final_height), Image.LANCZOS)
+            # Redimensionar la imagen del producto manteniendo la relación de aspecto
+            prod_image.thumbnail((self.final_width, self.final_height), Image.LANCZOS)
 
-            # Centrar la imagen del producto en el fondo
-            bg_image.paste(prod_image, (0, 0), prod_image)
+            # Aumentar el tamaño de la imagen del producto
+            new_size = (int(prod_image.width * self.scale_factor), int(prod_image.height * self.scale_factor))
+            prod_image = prod_image.resize(new_size, Image.LANCZOS)
+
+            # Calcular la posición para centrar la imagen del producto en el fondo
+            pos_x = (self.final_width - prod_image.width) // 2
+            pos_y = (self.final_height - prod_image.height) // 2
+
+            # Pegar la imagen del producto en el centro de la imagen de fondo
+            bg_image.paste(prod_image, (pos_x, pos_y), prod_image)
 
             # Guardar la imagen combinada en un buffer
             buffered = BytesIO()

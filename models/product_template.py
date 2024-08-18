@@ -1,7 +1,6 @@
 import logging
 from odoo import models, fields, api
-
-from classes.ImageBuilder import ImageBuilder
+from ..classes.ImageBuilder import ImageBuilder
 
 _logger = logging.getLogger(__name__)
 

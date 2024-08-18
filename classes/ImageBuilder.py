@@ -12,7 +12,7 @@ class ImageBuilder:
         self.image_base = "https://pcmasters.tech/frames/WEB.jpg"
         self.final_width = 1920
         self.final_height = 1920
-        self.scale_factor = 2.5  # Factor de escala para hacer la imagen más grande
+        self.scale_factor = 1.5  # Factor de escala para hacer la imagen más grande
 
     def _decode_base64(self, base64_str):
         """Decodifica una cadena base64 en una imagen binaria."""

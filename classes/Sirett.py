@@ -21,7 +21,7 @@ class SirettConnector:
 
     def get_items(self, pBodega):
         # Suponiendo que este método no necesita 'icodigo'
-        response = self._authenticate('wsc_request_bodega_all_item', int(pBodega), "")
+        response = self._authenticate('wsc_request_bodega_all_items', int(pBodega))
         return response['data']
 
     def get_item(self, pBodega, pProducto):

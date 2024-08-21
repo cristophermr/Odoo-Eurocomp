@@ -19,9 +19,6 @@ class EuroCron(models.TransientModel):
         # Obtén la configuración de Sirett
         sirett_config = self._get_sirett_config()
 
-        # if not sirett_config:
-        #     return False  # No hay configuración disponible
-
         # Inicializa la conexión con Sirett
         user = sirett_config.get_param('eurocomp_username')
         password = sirett_config.get_param('eurocomp_password')

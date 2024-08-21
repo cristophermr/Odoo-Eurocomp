@@ -34,7 +34,7 @@ class EuroCron(models.TransientModel):
             if existing_product:
                 # Si el registro ya existe, actualiza precio y stock
                 existing_product.write({
-                    'precio': float(data['precio'].replace(',', '.')),
+                    'precio': float(data['precio']),
                     'stock': data['stock'],
                 })
             else:
@@ -47,12 +47,12 @@ class EuroCron(models.TransientModel):
                     'marca': data['marca'],
                     'clase': data['clase'],
                     'modelo': data['modelo'],
-                    'precio': float(data['precio'].replace(',', '.')),
+                    'precio': float(data['precio']),
                     'stock': data['stock'],
                     'caracteristicas': data['caracteristicas'],
                     'peso': data['peso'],
                     'medida': data['medida'],
-                })
+            })
 
         return True
 

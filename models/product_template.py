@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
-
+    euro_item_code = fields.Char(string='Euro Item Code', readonly=True, required=False)
     def write(self, vals):
         if vals.get('image_1920'):
             image_path = vals['image_1920']

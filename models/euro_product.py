@@ -75,8 +75,7 @@ class Producto(models.Model):
     def _CheckProduct(self, product, category_id):
         ObjProductTemplate = self.env['product.template']
         ObjProductCabys = self.env['cabys.producto']
-        # ltsProduct = ObjProductTemplate.search([('euro_item_code', '=', product.codigo)], limit=1)
-
+        ltsProduct = ObjProductTemplate.search([('euro_item_code', '=', product.codigo)], limit=1)
         try:
             if not ltsProduct:
                 Cabys = ObjProductCabys.search([('codigo', '=', product.cod_hacienda)], limit=1)
@@ -89,7 +88,7 @@ class Producto(models.Model):
                     'list_price': self._CalculatePrice(product.precio),
                     "tracking": 'serial',
                     'standard_price': round(product.precio,2),
-                    # 'euro_item_code': product.codigo
+                    'euro_item_code': product.codigo
                 }
                 result = ObjProductTemplate.create(product_val)
                 return result.id

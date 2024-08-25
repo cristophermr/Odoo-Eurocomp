@@ -21,7 +21,7 @@ Este módulo importa todos los productos de Eurocomp y a su vez actualiza sus re
     },
 
     # Modulos necesarios para que este funcione correctamente
-    'depends': ['base', 'stock', 'purchase'],
+    'depends': ['base', 'stock', 'purchase','cabys','sale_management'],
 
     # Siempre cargados
     'data': [

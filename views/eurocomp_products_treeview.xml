@@ -41,6 +41,7 @@
                 <search string="Productos">
                     <group expand="1" string="Agrupar por">
                         <filter string="Familia" name="familia_field" domain="[]" context="{'group_by':'familia'}"/>
+                        <filter string="Marca" name="marca_field" domain="[]" context="{'group_by':'marca'}"/>
                         <filter string="Stock" name="stock_filter" domain="[('stock', '>=', 1)]"/>
                     </group>
                 </search>

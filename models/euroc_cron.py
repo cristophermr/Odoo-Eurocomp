@@ -82,9 +82,8 @@ class EuroCron(models.TransientModel):
                     product.product_tmpl_id.list_price = self._CalculatePrice(float(EuroProduct['precio']))
                     product.product_tmpl_id.standard_price = self._CalculatePrice(float(EuroProduct['precio']), True)
 
-                if product.product_tmpl_id.standard_price <= 0:
+                if product.product_tmpl_id.list_price <= 0:
                     product.product_tmpl_id.list_price = self._CalculatePrice(float(EuroProduct['precio']))
-                    product.product_tmpl_id.standard_price = self._CalculatePrice(float(EuroProduct['precio']), True)
 
                 # Aquí se descarga la imagen y se convierte en base64 antes de asignarla
                 if EuroProduct['image_url'] and not product.product_tmpl_id.image_1920:

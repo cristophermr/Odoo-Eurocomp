@@ -22,13 +22,7 @@ class SirettConnector:
     def get_items(self, pBodega):
         # Suponiendo que este método no necesita 'icodigo'
         response = self._authenticate('wsc_request_bodega_all_items', int(pBodega))
-        return response['data']
-
-    def get_item(self, pBodega, pProducto):
-        try:
-            response = self._authenticate('wsc_request_bodega_all_item', int(pBodega), str(pProducto))
-            return response['data']
-        except Exception as e:
-            _logger.info(f"Error fetching item {pProducto} from bodega {pBodega}: {e}")
-            _logger.info(f"Args: {self.user}, {self.password}, {int(pBodega)}, {str(pProducto)}")
+        if response['result'] == 4:
+            _logger.info("No se tiene acceso a los items de la bodega.")
             return None
+        return response['data']
